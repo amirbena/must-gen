@@ -1,0 +1,21 @@
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { {{serviceName}} } from './{{serviceFile}}';
+
+@Controller('{{path}}')
+export class {{className}} {
+  constructor(private readonly {{serviceInstance}}: {{serviceName}}) {}
+
+  {{#methods}}
+  @{{type}}('{{route}}')
+  {{#hasBody}}
+  async {{methodName}}(@Body() body: {{bodyType}}): Promise<{{responseType}}> {
+    return this.{{serviceInstance}}.{{methodName}}(body);
+  }
+  {{/hasBody}}
+  {{^hasBody}}
+  async {{methodName}}(): Promise<{{responseType}}> {
+    return this.{{serviceInstance}}.{{methodName}}();
+  }
+  {{/hasBody}}
+  {{/methods}}
+}

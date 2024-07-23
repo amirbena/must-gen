@@ -1,0 +1,11 @@
+import { Injectable } from '@nestjs/common';
+import { {{interfaceName}} } from './{{interfaceFile}}';
+
+@Injectable()
+export class {{className}} {
+  {{#methods}}
+  async {{methodName}}({{#hasBody}}body: {{bodyType}}{{/hasBody}}): Promise<{{responseType}}> {
+    // Implement your logic here
+  }
+  {{/methods}}
+}
