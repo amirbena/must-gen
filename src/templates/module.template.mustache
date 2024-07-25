@@ -1,0 +1,32 @@
+{{#if hasImports}}
+import { Module } from '@nestjs/common';
+{{^hasImports}}
+@nestjs/common doesn't seem to be imported. Make sure to include it for modules.
+{{/if}}
+ 
+{{#imports}}
+import { {{importName}} } from '{{importPath}}';
+{{/imports}}
+ 
+//TODO: to change the next line to the right import area!
+import Logger from 'roiSusiSharedUtilsForBFF'
+ 
+@Module({
+imports: [
+{{#imports}}
+{{importName}},
+{{/imports}}
+],
+providers: [
+Logger,
+{{#providers}}
+{{providerName}},
+{{/providers}}
+],
+exports: [
+{{#exports}}
+{{exportName}},
+{{/exports}}
+],
+})
+export class {{moduleName}} {}
