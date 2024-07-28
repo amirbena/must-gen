@@ -1,21 +1,63 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import { {{serviceName}} } from './{{serviceFile}}';
-
-@Controller('{{path}}')
-export class {{className}} {
-  constructor(private readonly {{serviceInstance}}: {{serviceName}}) {}
-
-  {{#methods}}
-  @{{type}}('{{route}}')
-  {{#hasBody}}
-  async {{methodName}}(@Body() body: {{bodyType}}): Promise<{{responseType}}> {
-    return this.{{serviceInstance}}.{{methodName}}(body);
-  }
-  {{/hasBody}}
-  {{^hasBody}}
-  async {{methodName}}(): Promise<{{responseType}}> {
-    return this.{{serviceInstance}}.{{methodName}}();
-  }
-  {{/hasBody}}
-  {{/methods}}
+import { Controller, 
+        {{#importedMethods}}{{importedMethod}},{{/importedMethods}}, 
+        {{#isBodyUsed}}Body{{/isBodyUsed}}, 
+        {{#isParamsUsed}}Param{{/isParamsUsed}}, 
+        {{#isQueriesUsed}}Query{{/isQueriesUsed}}, 
+        UseGuards } from '@nestjs/common';
+ 
+@UseGuards({{#guards}}{{guard}},{{/guards}})
+@UseInterceptors({{#interceptors}}{{interceptor}},{{/interceptors}})
+@Controller('{{controllerName}}')
+export class {{controllerName}}Controller {
+ constructor() {}
+ 
+ 
+ {{#routes}}
+ 
+@{{method}}('{{path}}')
+ async {{handlerName}}(
+{{#pathParams}}
+  @Param('{{pathParam}}') {{pathParam}}: string,
+{{/pathParams}}
+  @Body() {{bodyParam}}: {{bodyType}},
+{{#queryParams}}
+  @Query('{{queryParam}}') {{queryParam}}: string
+{{/queryParams}}
+ ): Promise<any> {
+  // Your logic
+ }
+ 
+{{/routes}}
 }
+
+
+/*EXAMPLES- NOT INCULDED IN TEMPLATE*/
+const routes = [
+  {
+    method: 'GET',
+    path: 'products',
+    handlerName: 'findAll',
+    queryParams: ['name', 'category']
+  },
+  {
+    method: 'POST',
+    path: 'products',
+    handlerName: 'createProduct',
+    bodyParam: 'productDto',
+    bodyType: 'ProductDto'
+  }
+];
+
+
+const template = Mustache.compile(templateSource);
+// Generate the controller codeconst controllerContent = template({
+  controllerName: 'Products',
+  importedMethods: ['Get', 'Post'],
+  isBodyUsed: true,
+  isParamsUsed: false,
+  isQueriesUsed: true,
+  guards: [],
+  interceptors: [],
+  routes: routes
+});
+

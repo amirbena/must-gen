@@ -1,11 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { {{interfaceName}} } from './{{interfaceFile}}';
+@Injectable()export class {{ServiceEndpoint}}Service {
+  async process(): Promise<{{ServiceEndpointModel}}> {
+    const canProceed = await this.preProcess({{maybe something here after we do the pre and post process}});
 
-@Injectable()
-export class {{className}} {
-  {{#methods}}
-  async {{methodName}}({{#hasBody}}body: {{bodyType}}{{/hasBody}}): Promise<{{responseType}}> {
-    // Implement your logic here
+    if (!canProceed) {
+      throw new Error('Service cannot proceed'); // Replace with your custom error message
+    }
+
+    const result = await this.execute();
+
+    await this.postProcess();
+
+    return result;
   }
-  {{/methods}}
 }
+
+/////
+const templateData = {
+  ServiceEndpoint: 'UserService', // Replace with your desired service endpointServiceEndpointModel: 'User', // Replace with the corresponding model
+};
+ 
