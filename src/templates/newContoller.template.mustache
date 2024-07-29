@@ -1,33 +1,24 @@
-import { Controller, 
-        {{#importedMethods}}{{importedMethod}},{{/importedMethods}} 
-        {{#isParamsUsed}}Param,{{/isParamsUsed}} 
-        {{#isQueriesUsed}}Query,{{/isQueriesUsed}} 
-        UseGuards, 
-        UseInterceptors, 
-        {{#isBodyUsed}}Body, UsePipes, ValidationPipe{{/isBodyUsed}} } from '@nestjs/common';
+import { Controller, {{#importedMethods}} {{.}}{{^@last}},{{/@last}}{{/importedMethods}} {{#isParamsUsed}}Param, {{/isParamsUsed}} {{#isQueriesUsed}}Query, {{/isQueriesUsed}}  UseGuards, UseInterceptors, {{#isBodyUsed}}Body, UsePipes, ValidationPipe{{/isBodyUsed}} } from '@nestjs/common';
 
 {{#interfaces}}
 import { {{interfaceName}} } from '{{interfacePath}}';
 {{/interfaces}}
 
-@UseGuards({{#guards}}{{guard}},{{/guards}})
-@UseInterceptors({{#interceptors}}{{interceptor}},{{/interceptors}})
+@UseGuards({{#guards}}{{.}}{{guard}},{{/guards}})
+@UseInterceptors({{#interceptors}}{{.}}{{interceptor}},{{/interceptors}})
 @Controller('{{controllerName}}')
+
 export class {{controllerName}}Controller {
   constructor() {}
-  
+
   {{#routes}}
   @{{method}}('{{path}}')
-  {{#isBodyUsed}}
-  @UsePipes(ValidationPipe)
-  {{/isBodyUsed}}
+  {{#isBodyUsed}}@UsePipes(ValidationPipe){{/isBodyUsed}}
   async {{handlerName}}(
     {{#pathParams}}
-    @Param() params: { {{#each pathParams}} {{this}}: string; {{/each}} },
-    {{/pathParams}}
+    @Param('{{paramName}}') {{paramName}}: string,{{/pathParams}}
     {{#queryParams}}
-    @Query() query: { {{#each queryParams}} {{this}}: string; {{/each}} },
-    {{/queryParams}}
+    @Query('{{queryParamName}}') {{queryParamName}}: string,{{/queryParams}}
     {{#isBodyUsed}}
     @Body() body: {{bodyType}}
     {{/isBodyUsed}}
@@ -37,47 +28,50 @@ export class {{controllerName}}Controller {
   {{/routes}}
 }
 
+`;
 
-//EXAMPLE OBJECT:
-
+// Example Data
 const templateData = {
-  importedMethods: ['Get', 'Post'],
-  isParamsUsed: true,
-  isQueriesUsed: true,
-  isBodyUsed: true, // Set to true if at least one route uses body
-  guards: ['AuthGuard'],
-  interceptors: ['LoggingInterceptor'],
-  controllerName: 'Example',
-  interfaces: [
-    { interfaceName: 'CreateExampleDto', interfacePath: './dto/create-example.dto' },
-    { interfaceName: 'UpdateExampleDto', interfacePath: './dto/update-example.dto' }
-  ],
-  routes: [
-    {
-      method: 'Get',
-      path: ':id/:subId',
-      handlerName: 'getExample',
-      pathParams: ['id', 'subId'],
-      queryParams: ['filter', 'sort'],
-      isBodyUsed: false
-    },
-    {
-      method: 'Post',
-      path: '',
-      handlerName: 'createExample',
-      pathParams: [],
-      queryParams: [],
-      isBodyUsed: true,
-      bodyType: 'CreateExampleDto'
-    },
-    {
-      method: 'Put',
-      path: ':id',
-      handlerName: 'updateExample',
-      pathParams: ['id'],
-      queryParams: [],
-      isBodyUsed: true,
-      bodyType: 'UpdateExampleDto'
-    }
-  ]
-};
+    importedMethods: ['Get', 'Post', 'Put'],
+    isParamsUsed: true,
+    isQueriesUsed: true,
+    isBodyUsed: true, // Set to true if at least one route uses body
+    guards: ['AuthGuard'],
+    interceptors: ['LoggingInterceptor'],
+    controllerName: 'Example',
+    interfaces: [
+      { interfaceName: 'CreateExampleDto', interfacePath: '../models/create-example.dto' }, // Corrected path
+      { interfaceName: 'UpdateExampleDto', interfacePath: '../models/update-example.dto' } // Corrected path
+    ],
+    routes: [
+      {
+        method: 'Get',
+        path: ':id/:subId',
+        handlerName: 'getExample',
+        pathParams: [{ paramName: 'id' }, { paramName: 'subId' }],
+        queryParams: [{ queryParamName: 'filter' }, { queryParamName: 'sort' }],
+        isBodyUsed: false
+      },
+      {
+        method: 'Post',
+        path: '',
+        handlerName: 'createExample',
+        pathParams: [],
+        queryParams: [],
+        isBodyUsed: true,
+        bodyType: 'CreateExampleDto'
+      },
+      {
+        method: 'Put',
+        path: ':id',
+        handlerName: 'updateExample',
+        pathParams: [{ paramName: 'id' }],
+        queryParams: [],
+        isBodyUsed: true,
+        bodyType: 'UpdateExampleDto'
+      }
+    ]
+  };
+  
+
+  AFTER THE RENDER PLEASE USE THIS OF RENDERED SERVICE: .replaceAll(/\t/g, '  ').replaceAll('&#x2F;', '/')
