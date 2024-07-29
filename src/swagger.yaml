@@ -3,13 +3,13 @@ info:
   version: "1.0.0"
   title: User API
 tags:
-  - name: User
+  - name: user
     description: Operations about users
 paths:
-  /users:
+  /user:
     get:
       tags:
-        - User
+        - user
       summary: Get all users
       operationId: getUsers
       responses:
@@ -21,7 +21,7 @@ paths:
               $ref: '#/definitions/User'
     post:
       tags:
-        - User
+        - user
       summary: Create a user
       operationId: createUser
       parameters:
@@ -39,7 +39,7 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/Error'
-  /users/{id}:
+  /user/{id}:
     get:
       tags:
         - User
@@ -57,7 +57,7 @@ paths:
             $ref: '#/definitions/User'
     put:
       tags:
-        - User
+        - user
       summary: Update a user by ID
       operationId: updateUserById
       parameters:
@@ -77,7 +77,7 @@ paths:
             $ref: '#/definitions/User'
     delete:
       tags:
-        - User
+        - user
       summary: Delete a user by ID
       operationId: deleteUserById
       parameters:
